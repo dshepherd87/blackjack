@@ -7,10 +7,14 @@ class Hand:
         self._value = self.get_hand_value()
 
     def __repr__(self):
-        result = ""
+        """result = ""
         for card in self._cards:
             result += f"{card} "
-        return result
+        return result"""
+        return self._cards
+    
+    def show_card(self, index):
+        return self._cards[index]
 
     def add_card(self, card):
         self._cards.append(card)

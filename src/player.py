@@ -1,4 +1,5 @@
 from hand import Hand
+from validators import input_integer
 
 class Player:
 	def __init__(self, name, stack):
@@ -29,12 +30,12 @@ class Player:
 			raise Exception("Player cannot go negative on stack")
 		
 	def place_bet(self, bet_amount):
-		if bet_amount > self._personal_stack:
-			return "You cannot bet more than you have"
-		else:
+		if bet_amount <= self._personal_stack:
 			self._bet_stack += bet_amount
 			self._personal_stack -= bet_amount
-			return f"{bet_amount} bet placed"
+			return True
+		else:
+			raise ValueError("Bet is too large, you cannot bet more than you have")
 
 	def get_bet_stack(self):
 		return self._bet_stack
