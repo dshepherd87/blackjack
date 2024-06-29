@@ -27,7 +27,7 @@ class Player:
 		if self._stack >= chips:
 			self._stack -= chips
 		else:
-			raise Exception("Player cannot go negative on stack")
+			raise ValueError("Player cannot have negative chips")
 		
 	def place_bet(self, bet_amount):
 		if bet_amount <= self._personal_stack:

@@ -35,4 +35,4 @@ class Hand:
                 value += 11
             elif card.get_rank() == 14 and value > 10:
                 value += 1
-        
+        return value
