@@ -1,15 +1,24 @@
 import time
 from player import Player
 from dealer import Dealer
-from validators import input_integer, input_string
+from validators import input_integer, input_string, input_yes_no
 
 class Blackjack:
     def game_loop():
         print("Welcome to Blackjack!")
         print()
         players = Blackjack.add_players()
-        Blackjack.game_round(players)
-        
+        while True:
+            Blackjack.game_round(players)
+            time.sleep(4)
+            print()
+            play_again = input_yes_no("Would you like to play again? (y/n): ")
+            if not play_again:
+                break
+            for player in players:
+                player.reset_player()
+        print()
+        print("Goodbye!")
 
     def add_players():
         players= []
@@ -28,26 +37,33 @@ class Blackjack:
         print("Place your bets please.")
         for player in players:
             while True:
-                bet_amount = input_integer(f"{player}, place your bet: $")
+                bet_amount = input_integer(f"{player}, you currently have ${player.get_stack()} place your bet: $")
                 try:
                     player.place_bet(bet_amount)
+                    print()
                     break
                 except Exception as e:
                     print(e)
 
     def deal_cards(dealer, players):
-        print("The cards are beind dealt...")
+        print("The cards are being dealt...")
         print()
         # deal the first round of cards
         for player in players:
             player.receive_card(dealer.deal_card())
             print(f"{player} receives the {player.get_hand().show_card(0)}")
+            print()
+            time.sleep(1)
         dealer.receive_card(dealer.deal_card())
         print(f"The dealer receives the {dealer.show_hand().show_card(0)}")
+        print()
+        time.sleep(1)
         # deal the second round of cards
         for player in players:
             player.receive_card(dealer.deal_card())
             print(f"{player} receives the {player.get_hand().show_card(1)}")
+            print()
+            time.sleep(1)
         dealer.receive_card(dealer.deal_card())
 
     def display_table(dealer, players):
@@ -69,7 +85,37 @@ class Blackjack:
         print()
         Blackjack.display_table(dealer, players)
         print()
+        # check if players or dealer have Blackjack
+        if dealer.show_hand().get_hand_value() == 21:
+            print("Dealer has Blackjack!")
+            dealer.display_dealer()
+            dealer.print_full_hand()
+            print()
+            for player in players:
+                if player.get_hand().get_hand_value() == 21:
+                    print(f"{player} pushes and gets back ${player.get_bet_stack()} back")
+                    player.give_chips(player.get_bet_stack)
+                    player.update_bet_stack(0)
+                else:
+                    print(f"{player} loses ${player.get_bet_stack}")
+                    print()
+                    time.sleep(1)
+            print()
+            print("Round over!")
+            return  
+
         for player in players:
+            if player.get_hand().get_hand_value() == 21:
+                print(f"{player} has Blackjack!")
+                winnings = player.get_bet_stack() * 2.5
+                print()
+                time.sleep(1)
+                print(f"{player} wins {winnings}")
+                player.update_bet_stack(winnings)
+                player.win_bet()   
+                print()
+                time.sleep(1)
+                break
             round = 1
             while True:
                 player_action = player.turn(round)
@@ -81,11 +127,13 @@ class Blackjack:
                     if player.get_hand().get_hand_value() == 21:
                         print("21!")
                         print()
+                        time.sleep(2)
                         break
                     if player.get_hand().get_hand_value() > 21:
                         print("Bust!")
                         print()
                         player.update_bet_stack(0)
+                        time.sleep(2)
                     break
                 # if the player stands, nothing to do; move on to the next player
                 elif player_action == 's':
@@ -99,12 +147,14 @@ class Blackjack:
                     if player.get_hand().get_hand_value() == 21:
                         print("21!")
                         print()
+                        time.sleep(2)
                         break
                     # if the player hand goes over 21, they bust. stop dealing cards and take away their bet stack
                     if player.get_hand().get_hand_value() > 21:
                         print("Bust!")
                         print()
                         player.update_bet_stack(0)
+                        time.sleep(2)
                         break
                     round = round + 1
         print("Now showing the dealer's hand:")
@@ -113,17 +163,19 @@ class Blackjack:
             dealer.display_dealer()
             dealer.print_full_hand()
             print()
-            
+            time.sleep(0.5)
             print(f"Current value of the dealer's hand is: {dealer_hand_value}")
             print()
+            time.sleep(0.5)
             # if the dealer has over 21, the house busts
             if dealer_hand_value > 21:
                 print("The dealer busts!")
                 for player in players:
                     if player.get_bet_stack() != 0:
-                        print(f"{player} beats the dealer and wins ${player.get_bet_stack() * 2}")
-                        player.give_chips(player.get_bet_stack() * 2)
-                        player.update_bet_stack(0)
+                        winnings = player.get_bet_stack() * 2
+                        print(f"{player} beats the dealer and wins ${winnings}")
+                        player.update_bet_stack(winnings)
+                        player.win_bet()
                 break
             # if the dealer has a score of 17 or more, the house stands
             elif dealer_hand_value > 16:

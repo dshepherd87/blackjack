@@ -29,8 +29,9 @@ def input_string(prompt_string):
 def input_yes_no(prompt_string):
     while True:
         user_input = input(prompt_string).strip()
-        if user_input in ['y', 'Y', 'n', 'N']:
-            break
+        if user_input in ['y', 'Y']:
+            return True
+        elif user_input in ['n', 'N']:
+            return False
         else:
             print("Invalid input. Response must be y (yes) or n (no)")
-    return user_input

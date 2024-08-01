@@ -11,6 +11,10 @@ class Player:
 	def __repr__(self):
 		return self._name
 	
+	def reset_player(self):
+		self._bet_stack = 0
+		self._hand = Hand([])
+
 	def receive_card(self, card):
 		self._hand.add_card(card)
 
@@ -53,7 +57,8 @@ class Player:
 		print("--------------------")
 		for card in self.get_hand():
 			print(f"{card}")
-		print(f"Your bet: ${self.get_bet_stack()}")
+		print(f"Score: {self.get_hand().get_hand_value()}")
+		print(f"Bet: ${self.get_bet_stack()}")
 		print()
 
 	def turn(self, round):
