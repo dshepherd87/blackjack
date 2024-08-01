@@ -1,11 +1,12 @@
 def input_integer(prompt_string):
     while True:
+        user_input = input(prompt_string)
         try:
-            user_input = int(input(prompt_string))
+            user_int = int(user_input)
             break
         except ValueError:
-            print("Invalid input. Please enter an integer")
-    return user_input  
+            print(f"Invalid input. {user_input} is not an integer.")
+    return user_int
 
 def input_float(prompt_string):
     while True:

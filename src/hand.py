@@ -6,12 +6,13 @@ class Hand:
         self._cards = cards
         self._value = self.get_hand_value()
 
+    # when an instance of the object is called, it should simply return the _cards list
     def __repr__(self):
-        """result = ""
-        for card in self._cards:
-            result += f"{card} "
-        return result"""
         return self._cards
+
+    # when calling an iteration over the object, it should act as an iteration of the _cards list    
+    def __iter__(self):
+        return iter(self._cards)
     
     def show_card(self, index):
         return self._cards[index]

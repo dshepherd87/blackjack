@@ -19,9 +19,9 @@ class Player:
 	
 	def get_stack(self):
 		return self._personal_stack
-
+	
 	def give_chips(self, chips):
-		self._stack += chips
+		self._personal_stack += chips
 
 	def take_chips(self, chips):
 		if self._stack >= chips:
@@ -47,3 +47,32 @@ class Player:
 		self._personal_stack += self._bet_stack
 		self._bet_stack = 0
 
+	def display_player(self):
+		print("--------------------")
+		print(f"      {self}")
+		print("--------------------")
+		for card in self.get_hand():
+			print(f"{card}")
+		print(f"Your bet: ${self.get_bet_stack()}")
+		print()
+
+	def turn(self, round):
+		print(f"{self}, your hand is currently worth {self.get_hand().get_hand_value()} points:")
+		if round == 1:
+			print("(d)ouble down")
+		print("(h)it")
+		print("(s)tand")
+		while True:
+			player_choice = input(":")
+			# if the player chooses to either hit or stand, just return their choice
+			if player_choice in ['h', 's']:
+				return player_choice
+			# if the player chooses to double down, A: it must be the first round of action, and B: they must have enough chips left to double their bet
+			elif round == 1 and player_choice == "d" and (2 * self.get_bet_stack()) <= self.get_stack():
+				return player_choice
+			elif round == 1 and player_choice == "d" and (2 * self.get_bet_stack()) > self.get_stack():
+				print("You cannot double down, you don't have enough chips")
+			# if the player inputs an invalid option, prompt them to try again
+			else:
+				print("Invalid input, please try again")
+		
